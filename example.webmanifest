@@ -1,0 +1,14 @@
+{
+    "name": "121 Final Project",
+    "short_name": "121Game",
+    "description": "A Phaser-powered multilingual game project.",
+    "start_url": "/index.html",
+    "display": "fullscreen",
+    "icons": [
+      {
+        "sizes": "180x180",
+        "src": "https://cdn.glitch.global/4fc6eda5-1313-4a1e-8b76-b859653416cd/brace-logo-symbol.png?v=1733533998031"
+      }
+    ]
+  }
+  
