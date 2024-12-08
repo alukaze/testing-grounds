@@ -33,13 +33,7 @@ class Play extends Phaser.Scene {
 
     create() {
 
-        super.create();
-
-        // Set up mobile-friendly controls
-        this.setupMobileControls();
-    
-        // Enable tap-to-move for the farmer
-        this.enableFarmerTouchMovement();
+        this.input.on('pointerdown', this.handleTapMovement, this);
 
         this.keyA = this.input?.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.keyS = this.input?.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -738,14 +732,30 @@ updateLocalizedText() {
         this.winText.setText(`${Localization.get('you_win')}`);
     } 
 }
-enableFarmerTouchMovement() {
-    this.input.on('pointerdown', (pointer) => {
-        // Move farmer to the tapped position
-        this.farmer.setPosition(pointer.x, pointer.y);
-        console.log(`Farmer moved to: (${pointer.x}, ${pointer.y})`);
-    });
-}
+handleTapMovement(pointer) {
+    // Get the target position from the tap
+    const targetX = pointer.worldX;
+    const targetY = pointer.worldY;
 
+    // Optional: Limit movement bounds to the game world
+    const clampedX = Phaser.Math.Clamp(targetX, 0, this.game.config.width);
+    const clampedY = Phaser.Math.Clamp(targetY, 0, this.game.config.height);
+
+    // Calculate distance and duration for the movement
+    const distance = Phaser.Math.Distance.Between(this.farmer.x, this.farmer.y, clampedX, clampedY);
+    const duration = distance / 0.2; // Adjust speed by changing the divisor
+
+    // Move farmer using Phaser's tween system
+    this.tweens.add({
+        targets: this.farmer,
+        x: clampedX,
+        y: clampedY,
+        duration: duration,
+        ease: 'Linear'
+    });
+
+    console.log(`Farmer moving to: (${clampedX}, ${clampedY})`);
+}
 }
 
 // Localization.get('undo')
