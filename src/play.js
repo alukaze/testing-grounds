@@ -6,7 +6,7 @@ class Play extends Phaser.Scene {
         this.fields = [];
         this.stage3Counter = 0;
         this.dayCounter = 0;
-        this.undoStack = []; // Initialize undo stack
+        this.undoStack = []; 
         this.redoStack = []; 
         
     }
@@ -32,6 +32,29 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+
+        super.create();
+
+        // Set up mobile-friendly controls
+        this.setupMobileControls();
+    
+        // Enable tap-to-move for the farmer
+        this.enableFarmerTouchMovement();
+    
+        // Make fields interactive for planting, watering, etc.
+        this.enableFieldInteractions();
+    
+        // Adjust UI for different screen sizes
+        this.resizeUI();
+    
+        // Set up gesture controls (optional but recommended for mobile)
+        this.enableSwipeGestures();
+    
+        // Ensure localized text updates dynamically
+        this.updateMobileLocalizedText();
+    
+        // Any additional game-specific initialization...
+        console.log("Mobile-specific features integrated successfully!");
 
         this.keyA = this.input?.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.keyS = this.input?.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -730,6 +753,107 @@ updateLocalizedText() {
         this.winText.setText(`${Localization.get('you_win')}`);
     } 
 }
+setupMobileControls() {
+    // Undo Button
+    this.undoButton = this.add.text(30, 20, Localization.get('undo'), {
+        fontSize: '20px',
+        backgroundColor: 'green',
+        padding: { x: 20, y: 10 },
+        align: 'center'
+    }).setInteractive();
+
+    this.undoButton.on('pointerdown', () => {
+        this.undo();
+        console.log("Undo action performed");
+    });
+
+    // Redo Button
+    this.redoButton = this.add.text(150, 20, Localization.get('redo'), {
+        fontSize: '20px',
+        backgroundColor: '#f0a500',
+        padding: { x: 20, y: 10 },
+        align: 'center'
+    }).setInteractive();
+
+    this.redoButton.on('pointerdown', () => {
+        this.redo();
+        console.log("Redo action performed");
+    });
+
+    // Save Buttons
+    for (let slot = 1; slot <= 3; slot++) {
+        const saveButton = this.add.text(320, 70 + (slot - 1) * 50, `${Localization.get('save')}: ${slot}`, {
+            fontSize: '20px',
+            backgroundColor: '#21a99c',
+            padding: { x: 20, y: 10 },
+            align: 'center'
+        }).setInteractive();
+
+        saveButton.on('pointerdown', () => {
+            const currentState = this.getCurrentState();
+            localStorage.setItem(`gameStateSlot${slot}`, JSON.stringify(currentState));
+            console.log(`Game saved to slot ${slot}`);
+        });
+    }
+
+    // Load Buttons
+    for (let slot = 1; slot <= 3; slot++) {
+        const loadButton = this.add.text(500, 70 + (slot - 1) * 50, `Load Slot ${slot}`, {
+            fontSize: '20px',
+            backgroundColor: '#21a99c',
+            padding: { x: 20, y: 10 },
+            align: 'center'
+        }).setInteractive();
+
+        loadButton.on('pointerdown', () => {
+            this.loadGameState(slot);
+        });
+    }
+}
+enableFarmerTouchMovement() {
+    this.input.on('pointerdown', (pointer) => {
+        // Move farmer to the tapped position
+        this.farmer.setPosition(pointer.x, pointer.y);
+        console.log(`Farmer moved to: (${pointer.x}, ${pointer.y})`);
+    });
+}
+enableFieldInteractions() {
+    this.fields.forEach(field => {
+        field.sprite.setInteractive();
+
+        field.sprite.on('pointerdown', () => {
+            this.selectedField = field;
+            console.log(`Field ${field.index} selected`);
+
+            // Show water and sun levels
+            this.showWaterAndSunText(field);
+        });
+
+        field.sprite.on('pointerup', () => {
+            if (this.selectedField) {
+                console.log(`Action performed on field ${this.selectedField.index}`);
+                // Example: Plant or water logic
+                this.selectedField.plantLevel++;
+                this.updateFieldVisuals(this.selectedField);
+            }
+        });
+    });
+}
+resizeUI() {
+    // Listen for resize events
+    this.scale.on('resize', (gameSize) => {
+        const { width, height } = gameSize;
+        this.cameras.resize(width, height);
+
+        // Adjust positions dynamically
+        if (this.undoButton) this.undoButton.setPosition(30, height - 50);
+        if (this.redoButton) this.redoButton.setPosition(150, height - 50);
+
+        // Adjust other UI elements as needed
+        console.log(`Resized to width: ${width}, height: ${height}`);
+    });
+}
+
 }
 
 // Localization.get('undo')
