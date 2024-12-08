@@ -839,20 +839,6 @@ enableFieldInteractions() {
         });
     });
 }
-resizeUI() {
-    // Listen for resize events
-    this.scale.on('resize', (gameSize) => {
-        const { width, height } = gameSize;
-        this.cameras.resize(width, height);
-
-        // Adjust positions dynamically
-        if (this.undoButton) this.undoButton.setPosition(30, height - 50);
-        if (this.redoButton) this.redoButton.setPosition(150, height - 50);
-
-        // Adjust other UI elements as needed
-        console.log(`Resized to width: ${width}, height: ${height}`);
-    });
-}
 
 }
 
