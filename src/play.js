@@ -32,7 +32,7 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-        this.setupHtmlButtons();
+this.setupHtmlButtons();
         this.input.on('pointerdown', this.handleTapMovement, this);
 
         this.keyA = this.input?.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -507,14 +507,6 @@ class Play extends Phaser.Scene {
     handleGameStatePrompt() {
         const savedState = localStorage.getItem('gameState');
         if (savedState) {
-            const promptText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 
-                `${Localization.get('auto-save')}`, 
-                { font: '20px Arial', color: '#ff0000', wordWrap: { width: 500 } }
-            ).setOrigin(0.5, 0.5);
-            if (promptText) {
-                promptText.setText(`${Localization.get('auto-save')}`);
-                console.log("Auto-save message: " + `${Localization.get('auto-save')}`);
-            } 
 
             // Function to clear the HTML element's text
             const clearHtmlText = () => {
