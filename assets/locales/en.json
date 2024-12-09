@@ -23,5 +23,8 @@
     "sun": "Sun",
     "no-save": "No save found in slot",
     "no-save2": "No saved game found. Starting a new game...",
+    "loadSlot1": "Load Slot 1",
+    "loadSlot2": "Load Slot 2",
+    "loadSlot3": "Load Slot 3",
     "you_win": "You Win!"
   }

@@ -543,6 +543,43 @@ this.setupHtmlButtons();
                 clearHtmlText();
             });
 
+            // Handle Yes/No via buttons
+        const yesButton = document.getElementById('yes');
+        const noButton = document.getElementById('no');
+
+        const onYesClick = () => {
+            this.restoreState(JSON.parse(savedState)); // Load the saved state
+            promptText.setText(`${Localization.get('loaded')}`);
+            this.undoStack = [this.getCurrentState()];
+            this.redoStack = [];
+            shouldDisplayAutoSave = false;
+
+            this.time.delayedCall(1000, () => promptText.destroy());
+            clearHtmlText();
+
+            // Remove event listeners to prevent duplicate actions
+            yesButton.removeEventListener('click', onYesClick);
+            noButton.removeEventListener('click', onNoClick);
+        };
+
+        const onNoClick = () => {
+            localStorage.removeItem('gameState'); // Clear saved state
+            promptText.setText(`${Localization.get('new')}`);
+            this.undoStack = [this.getCurrentState()];
+            this.redoStack = [];
+            shouldDisplayAutoSave = false;
+
+            this.time.delayedCall(1000, () => promptText.destroy());
+            clearHtmlText();
+
+            // Remove event listeners to prevent duplicate actions
+            yesButton.removeEventListener('click', onYesClick);
+            noButton.removeEventListener('click', onNoClick);
+        };
+
+        yesButton.addEventListener('click', onYesClick);
+        noButton.addEventListener('click', onNoClick);
+
         } else {
             // Handle case for no saved state
             const promptText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 
@@ -729,6 +766,19 @@ setupHtmlButtons() {
     // Reference the Phaser scene context
     const scene = this;
 
+    // Localize all buttons with a "data-localize" attribute
+    const buttons = document.querySelectorAll('[data-localize]');
+    buttons.forEach(button => {
+        const key = button.getAttribute('data-localize');
+        const localizedText = Localization.get(key); // Fetch the localized string
+        button.textContent = localizedText; // Update button text
+    });
+
+    // Reference the auto-save message element
+    const autoSaveElement = document.querySelector('[data-localize="auto-save"]');
+    const yesButton = document.getElementById('yes');
+    const noButton = document.getElementById('no');
+
     // Add event listeners to the HTML buttons
     document.getElementById('loadSlot1').addEventListener('click', function () {
         scene.loadGameState(1); // Load save slot 1
@@ -740,6 +790,35 @@ setupHtmlButtons() {
 
     document.getElementById('loadSlot3').addEventListener('click', function () {
         scene.loadGameState(3); // Load save slot 3
+    });
+    
+    // Add event listeners to Yes and No buttons
+    const hidePromptElements = () => {
+        // Hide the auto-save message
+        if (autoSaveElement) autoSaveElement.style.display = 'none';
+
+        // Hide the Yes and No buttons
+        if (yesButton) yesButton.style.display = 'none';
+        if (noButton) noButton.style.display = 'none';
+    };
+
+    yesButton.addEventListener('click', function () {
+        const savedState = localStorage.getItem('gameState');
+        if (savedState) {
+            scene.restoreState(JSON.parse(savedState)); // Restore saved state
+            console.log('Yes button clicked: State restored');
+        } else {
+            console.log('Yes button clicked: No state to restore');
+        }
+
+        hidePromptElements(); // Hide elements after clicking "Yes"
+    });
+
+    noButton.addEventListener('click', function () {
+        localStorage.removeItem('gameState'); // Clear saved state
+        console.log('No button clicked: State cleared');
+
+        hidePromptElements(); // Hide elements after clicking "No"
     });
 }
 

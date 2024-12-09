@@ -23,6 +23,9 @@
     "sun": "Sol",
     "no-save": "No se encontró ninguna partida en la ranura",
     "no-save2": "No se encontró ninguna partida guardada. Iniciando un nuevo juego...",
+    "loadSlot1": "Cargar Ranura 1",
+    "loadSlot2": "Cargar Ranura 2",
+    "loadSlot3": "Cargar Ranura 3",
     "you_win": "¡Ganaste!"
   }
   
