@@ -761,6 +761,7 @@ updateLocalizedText() {
         this.winText.setText(`${Localization.get('you_win')}`);
     } 
 }
+
 // Inside your scene or setup function
 setupHtmlButtons() {
     // Reference the Phaser scene context
@@ -790,6 +791,21 @@ setupHtmlButtons() {
 
     document.getElementById('loadSlot3').addEventListener('click', function () {
         scene.loadGameState(3); // Load save slot 3
+    });
+    document.getElementById('undo').addEventListener('click', function () {
+        scene.undo();
+    });
+    document.getElementById('redo').addEventListener('click', function () {
+        scene.redo();
+    });
+    document.getElementById('save').addEventListener('click', function () {
+        scene.saveGameState();
+    });
+    document.getElementById('next_day').addEventListener('click', function () {
+        scene.dayCounter++; // Increment the day counter
+        scene.saveGameState(); // Save the new game state
+        scene.dayText.setText(`${Localization.get('days')}: ${scene.dayCounter}`); // Update day counter UI
+        console.log('Next day triggered.');
     });
     
     // Add event listeners to Yes and No buttons
