@@ -32,7 +32,7 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-
+        this.setupHtmlButtons();
         this.input.on('pointerdown', this.handleTapMovement, this);
 
         this.keyA = this.input?.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -732,6 +732,25 @@ updateLocalizedText() {
         this.winText.setText(`${Localization.get('you_win')}`);
     } 
 }
+// Inside your scene or setup function
+setupHtmlButtons() {
+    // Reference the Phaser scene context
+    const scene = this;
+
+    // Add event listeners to the HTML buttons
+    document.getElementById('loadSlot1').addEventListener('click', function () {
+        scene.loadGameState(1); // Load save slot 1
+    });
+
+    document.getElementById('loadSlot2').addEventListener('click', function () {
+        scene.loadGameState(2); // Load save slot 2
+    });
+
+    document.getElementById('loadSlot3').addEventListener('click', function () {
+        scene.loadGameState(3); // Load save slot 3
+    });
+}
+
 handleTapMovement(pointer) {
     // Get the target position from the tap
     const targetX = pointer.worldX;
