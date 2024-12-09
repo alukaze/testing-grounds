@@ -6,9 +6,9 @@ const urlsToCache = [
   '/src/play.js',
   '/src/main.js',
   '/src/LanguageManager.js',
-  '/style.css', // If you have a style file
-  'https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic&family=Noto+Sans+TC&display=swap', // Fonts
-  '/assets/sprite.png', // Replace with your actual game assets
+  '/style.css',
+  'https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic&family=Noto+Sans+TC&display=swap', 
+  '/assets/sprite.png', 
 ];
 
 // Install event - caching assets
