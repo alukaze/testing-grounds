@@ -1,5 +1,5 @@
 {
-    "Undo": "Start Game",
+    "button_start": "Start Game",
     "button_exit": "Exit",
     "welcome_message": "Welcome to the Game!",
 
@@ -10,10 +10,12 @@
     "Sunflower": "Sunflower",
     "Mushroom": "Mushroom",
     "Herb": "Herb",
-    "save": "Save Slot",
+    "saveSlot1": "Save Slot 1",
+    "saveSlot2": "Save Slot 2",
+    "saveSlot3": "Save Slot 3",
     "undo": "Undo",
     "redo": "Redo",
-    "saved": "Saved to slot",
+    "saving": "saving",
     "auto-save": "Do you want to load game? Y/N.",
     "load": "Loaded save slot ",
     "loaded": "Game loaded!",

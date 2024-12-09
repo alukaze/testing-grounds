@@ -419,12 +419,28 @@ this.setupHtmlButtons();
         return neighbors;
     }
 
-    saveGameState() {
-        const currentState = this.getCurrentState();
+    saveGameState(slot) {
+        const currentState = this.getCurrentState(); // Get the current game state
+        localStorage.setItem(`gameStateSlot${slot}`, JSON.stringify(currentState)); // Save to localStorage
+    
+        console.log(`Game saved to slot ${slot}`);
         if (JSON.stringify(this.undoStack[this.undoStack.length - 1]) !== JSON.stringify(currentState)) {
             this.undoStack.push(currentState);
         }
         localStorage.setItem('gameState', JSON.stringify(currentState));
+    
+        // Show visual feedback in HTML
+        const saveButton = document.getElementById(`saveSlot${slot}`);
+        if (saveButton) {
+            saveButton.textContent = `${Localization.get('saving')}...`;
+            saveButton.disabled = true; // Disable button during save
+    
+            // Simulate save delay for feedback
+            setTimeout(() => {
+                saveButton.textContent = `${Localization.get(`saveSlot${slot}`)}`;
+                saveButton.disabled = false; // Re-enable button
+            }, 1000);
+        }
     }
     
     getCurrentState() {
@@ -766,9 +782,18 @@ setupHtmlButtons() {
     document.getElementById('redo').addEventListener('click', function () {
         scene.redo();
     });
-    document.getElementById('save').addEventListener('click', function () {
-        scene.saveGameState();
+    
+    // Save buttons for slots
+    document.getElementById('saveSlot1').addEventListener('click', function () {
+        scene.saveGameState(1); // Save to slot 1
     });
+    document.getElementById('saveSlot2').addEventListener('click', function () {
+        scene.saveGameState(2); // Save to slot 2
+    });
+    document.getElementById('saveSlot3').addEventListener('click', function () {
+        scene.saveGameState(3); // Save to slot 3
+    });
+
     document.getElementById('next_day').addEventListener('click', function () {
         scene.dayCounter++; // Increment the day counter
         scene.saveGameState(); // Save the new game state
