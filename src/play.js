@@ -500,58 +500,13 @@ this.setupHtmlButtons();
     
     
     handleGameStatePrompt() {
+        this.scene.pause();
         const savedState = localStorage.getItem('gameState');
-        if (savedState) {
-
-            // Function to clear the HTML element's text
-            const clearHtmlText = () => {
-                const autoSaveElement = document.querySelector('[data-localize="auto-save"]');
-                if (autoSaveElement) {
-                    autoSaveElement.textContent = ''; // Clear the text
-                }
-            };
-    
-            this.input.keyboard.once('keydown-Y', () => {
-                const loadText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 
-                    `${Localization.get('loaded')}`, 
-                    { font: '20px Arial', color: '#ff0000', wordWrap: { width: 500 } }
-                ).setOrigin(0.5, 0.5);
-
-                this.restoreState(JSON.parse(savedState)); // Load the saved state
-                loadText.setText(`${Localization.get('loaded')}`);
-                this.undoStack = [this.getCurrentState()]; // Reset undo stack after loading game state
-                this.redoStack = []; // Clear redo stack
-                shouldDisplayAutoSave = false;
-                if (loadText) {
-                    loadText.setText(`${Localization.get('loaded')}`);
-                }
-
-                this.time.delayedCall(1000, () => loadText.destroy());
-                clearHtmlText();
-            });
-    
-            this.input.keyboard.once('keydown-N', () => {
-                const newText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 
-                    `${Localization.get('auto-save')}`, 
-                    { font: '20px Arial', color: '#ff0000', wordWrap: { width: 500 } }
-                ).setOrigin(0.5, 0.5);
-
-                localStorage.removeItem('gameState'); // Clear saved state
-                newText.setText(`${Localization.get('new')}`);
-                this.undoStack = [this.getCurrentState()]; // Initialize undo stack for new game
-                this.redoStack = []; // Reset redo stack
-                shouldDisplayAutoSave = false;
-                if (newText) {
-                    newText.setText(`${Localization.get('new')}`);
-                }
-                this.time.delayedCall(1000, () => newText.destroy());
-                clearHtmlText();
-            });
-
-            // Handle Yes/No via buttons
         const yesButton = document.getElementById('yes');
         const noButton = document.getElementById('no');
+        const autoSaveElement = document.querySelector('[data-localize="auto-save"]');
 
+        if (savedState) {
         const onYesClick = () => {
             const loadText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 
                 `${Localization.get('loaded')}`, 
@@ -566,6 +521,7 @@ this.setupHtmlButtons();
             if (loadText) {
                 loadText.setText(`${Localization.get('loaded')}`);
             }
+            this.scene.resume();
 
             this.time.delayedCall(1000, () => loadText.destroy());
             clearHtmlText();
@@ -589,6 +545,8 @@ this.setupHtmlButtons();
             if (newText) {
                 newText.setText(`${Localization.get('new')}`);
             }
+            this.scene.resume();
+            
             this.time.delayedCall(1000, () => newText.destroy());
             clearHtmlText();
 
@@ -601,16 +559,25 @@ this.setupHtmlButtons();
         noButton.addEventListener('click', onNoClick);
 
         } else {
+            // Remove buttons and auto-save message
+            if (yesButton) yesButton.style.display = 'none';
+            if (noButton) noButton.style.display = 'none';
+            if (autoSaveElement) autoSaveElement.style.display = 'none';
+    
+            this.scene.resume();
+    
             // Handle case for no saved state
             const promptText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 
                 `${Localization.get('no-save2')}`, 
                 { font: '20px Arial', color: '#ff0000', wordWrap: { width: 500 } }
             ).setOrigin(0.5, 0.5);
-            
+            if (promptText) {
+                promptText.setText(`${Localization.get('no-save2')}`);
+            }
+    
             this.undoStack = [this.getCurrentState()]; // Initialize undo stack for new game
             this.redoStack = []; // Initialize redo stack
             this.time.delayedCall(1000, () => promptText.destroy());
-            
         }
     }
     
@@ -743,20 +710,11 @@ updateLocalizedText() {
     if (this.dayText) {
         this.dayText.setText(`${Localization.get('days')}: ${this.dayCounter}`);
     }
-    if (this.nextDayButton) {
-        this.nextDayButton.setText(Localization.get('next_day'));
-    }
     if (this.reapButton) {
         this.reapButton.setText(Localization.get('reap'));
     }
     if (this.sowButton) {
         this.sowButton.setText(Localization.get('sow'));
-    }
-    if (this.undoButton) {
-        this.undoButton.setText(Localization.get('undo'));
-    }
-    if (this.redoButton) {
-        this.redoButton.setText(Localization.get('redo'));
     }
     if (this.sunText) {
         this.sunText.setText(Localization.get('sun'));
