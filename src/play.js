@@ -118,12 +118,7 @@ this.setupHtmlButtons();
         );
         this.dayText.setOrigin(0.5, 1);
 
-        this.nextDayButton = this.add.text(320, 20, Localization.get('next_day'), {
-            fontSize: '20px',
-            backgroundColor: '#21a99c',
-            padding: { x: 20, y: 10 },
-            align: 'center'
-        }).setInteractive();
+        this.nextDayButton = this.add.text().setInteractive();
         this.nextDayButton.on('pointerdown', () => {
             this.dayCounter++;
             this.undoStack.push(this.getCurrentState());
@@ -517,29 +512,39 @@ this.setupHtmlButtons();
             };
     
             this.input.keyboard.once('keydown-Y', () => {
+                const loadText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 
+                    `${Localization.get('loaded')}`, 
+                    { font: '20px Arial', color: '#ff0000', wordWrap: { width: 500 } }
+                ).setOrigin(0.5, 0.5);
+
                 this.restoreState(JSON.parse(savedState)); // Load the saved state
-                promptText.setText(`${Localization.get('loaded')}`);
+                loadText.setText(`${Localization.get('loaded')}`);
                 this.undoStack = [this.getCurrentState()]; // Reset undo stack after loading game state
                 this.redoStack = []; // Clear redo stack
                 shouldDisplayAutoSave = false;
-                if (promptText) {
-                    promptText.setText(`${Localization.get('loaded')}`);
+                if (loadText) {
+                    loadText.setText(`${Localization.get('loaded')}`);
                 }
 
-                this.time.delayedCall(1000, () => promptText.destroy());
+                this.time.delayedCall(1000, () => loadText.destroy());
                 clearHtmlText();
             });
     
             this.input.keyboard.once('keydown-N', () => {
+                const newText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 
+                    `${Localization.get('auto-save')}`, 
+                    { font: '20px Arial', color: '#ff0000', wordWrap: { width: 500 } }
+                ).setOrigin(0.5, 0.5);
+
                 localStorage.removeItem('gameState'); // Clear saved state
-                promptText.setText(`${Localization.get('new')}`);
+                newText.setText(`${Localization.get('new')}`);
                 this.undoStack = [this.getCurrentState()]; // Initialize undo stack for new game
                 this.redoStack = []; // Reset redo stack
                 shouldDisplayAutoSave = false;
-                if (promptText) {
-                    promptText.setText(`${Localization.get('new')}`);
+                if (newText) {
+                    newText.setText(`${Localization.get('new')}`);
                 }
-                this.time.delayedCall(1000, () => promptText.destroy());
+                this.time.delayedCall(1000, () => newText.destroy());
                 clearHtmlText();
             });
 
@@ -548,13 +553,21 @@ this.setupHtmlButtons();
         const noButton = document.getElementById('no');
 
         const onYesClick = () => {
-            this.restoreState(JSON.parse(savedState)); // Load the saved state
-            promptText.setText(`${Localization.get('loaded')}`);
-            this.undoStack = [this.getCurrentState()];
-            this.redoStack = [];
-            shouldDisplayAutoSave = false;
+            const loadText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 
+                `${Localization.get('loaded')}`, 
+                { font: '20px Arial', color: '#ff0000', wordWrap: { width: 500 } }
+            ).setOrigin(0.5, 0.5);
 
-            this.time.delayedCall(1000, () => promptText.destroy());
+            this.restoreState(JSON.parse(savedState)); // Load the saved state
+            loadText.setText(`${Localization.get('loaded')}`);
+            this.undoStack = [this.getCurrentState()]; // Reset undo stack after loading game state
+            this.redoStack = []; // Clear redo stack
+            shouldDisplayAutoSave = false;
+            if (loadText) {
+                loadText.setText(`${Localization.get('loaded')}`);
+            }
+
+            this.time.delayedCall(1000, () => loadText.destroy());
             clearHtmlText();
 
             // Remove event listeners to prevent duplicate actions
@@ -563,13 +576,20 @@ this.setupHtmlButtons();
         };
 
         const onNoClick = () => {
-            localStorage.removeItem('gameState'); // Clear saved state
-            promptText.setText(`${Localization.get('new')}`);
-            this.undoStack = [this.getCurrentState()];
-            this.redoStack = [];
-            shouldDisplayAutoSave = false;
+            const newText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 
+                `${Localization.get('auto-save')}`, 
+                { font: '20px Arial', color: '#ff0000', wordWrap: { width: 500 } }
+            ).setOrigin(0.5, 0.5);
 
-            this.time.delayedCall(1000, () => promptText.destroy());
+            localStorage.removeItem('gameState'); // Clear saved state
+            newText.setText(`${Localization.get('new')}`);
+            this.undoStack = [this.getCurrentState()]; // Initialize undo stack for new game
+            this.redoStack = []; // Reset redo stack
+            shouldDisplayAutoSave = false;
+            if (newText) {
+                newText.setText(`${Localization.get('new')}`);
+            }
+            this.time.delayedCall(1000, () => newText.destroy());
             clearHtmlText();
 
             // Remove event listeners to prevent duplicate actions
@@ -642,12 +662,7 @@ this.setupHtmlButtons();
 
     setupUndoRedoButtons() {
         // Create Undo button
-        this.undoButton = this.add.text(30, 20, Localization.get('undo'), {
-            fontSize: '20px',
-            backgroundColor: 'green',
-            padding: { x: 20, y: 10 },
-            align: 'center'
-        }).setInteractive();
+        this.undoButton = this.add.text().setInteractive();
     
         this.undoButton.on('pointerdown', () => {
             this.undo();
@@ -655,12 +670,7 @@ this.setupHtmlButtons();
         });
     
         // Create Redo button
-        this.redoButton = this.add.text(150, 20, Localization.get('redo'), {
-            fontSize: '20px',
-            backgroundColor: '#f0a500',
-            padding: { x: 20, y: 10 },
-            align: 'center'
-        }).setInteractive();
+        this.redoButton = this.add.text().setInteractive();
     
         this.redoButton.on('pointerdown', () => {
             this.redo();
@@ -863,5 +873,3 @@ handleTapMovement(pointer) {
     console.log(`Farmer moving to: (${clampedX}, ${clampedY})`);
 }
 }
-
-// Localization.get('undo')
